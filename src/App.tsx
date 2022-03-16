@@ -1,7 +1,6 @@
 import React from 'react';
 import 'css/style.css';
 
-
 // Import pages
 import Dashboard from 'components/Dashboard';
 import Header from 'components/Header';

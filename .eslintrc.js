@@ -3,9 +3,11 @@ module.exports = {
     "browser": true,
     "es2021": true
   },
+  "parser": "@typescript-eslint/parser",
   "extends": [
-    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
     "prettier",
   ],
   "parserOptions": {
@@ -16,7 +18,7 @@ module.exports = {
     "sourceType": "module"
   },
   "plugins": [
-    "react",
+    "@typescript-eslint",
     "prettier"
   ],
   "rules": {
