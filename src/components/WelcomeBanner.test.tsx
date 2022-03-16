@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { advanceBy, advanceTo, clear } from 'jest-date-mock';
+import { advanceTo, clear } from 'jest-date-mock';
 
 import WelcomeBanner from './WelcomeBanner';
 
