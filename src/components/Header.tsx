@@ -1,0 +1,15 @@
+import React from 'react';
+
+function Header() {
+  return (
+    <header className="sticky top-0 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200 z-30">
+      <div className="flex items-center justify-between h-16 -mb-px">
+        <div className="flex text-2xl text-slate-800 font-bold">
+          Dashboard Inc.
+        </div>
+      </div>
+    </header>
+  );
+}
+
+export default Header;
