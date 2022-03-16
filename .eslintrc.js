@@ -21,6 +21,11 @@ module.exports = {
     "@typescript-eslint",
     "prettier"
   ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "rules": {
   }
 }
