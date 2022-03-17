@@ -1,32 +1,27 @@
 import React from 'react';
-import { SWRConfig } from 'swr';
+import { Provider } from 'react-redux';
+import store from './App.store';
 import 'css/style.css';
 
 // Import pages
 import Dashboard from 'components/Dashboard';
 import Header from 'components/Header';
 
-const fetcher = (resource, init) => fetch(import.meta.env.VITE_API_BASE_URL + resource, init).then((res) => res.json());
 
 function App() {
   return (
-    <SWRConfig
-      value={{
-        fetcher,
-        refreshInterval: 3000,
-      }}
-    >
+    <Provider store={store}>
       <div className="flex h-screen overflow-hidden">
         {/* Content area */}
         <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
           {/*  Site header */}
-          <Header>Dashboard Inc.</Header>
+          <Header>Dashboard.</Header>
           <main>
             <Dashboard />
           </main>
         </div>
       </div>
-    </SWRConfig>
+    </Provider>
   );
 }
 

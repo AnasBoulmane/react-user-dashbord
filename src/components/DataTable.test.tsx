@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 
 import DataTable from './DataTable';
 
@@ -18,6 +18,53 @@ describe('DataTable test', () => {
     expect(getAllByRole('cell').length).toBe(columns.length * customers.length);
 
     columns.forEach(({ selector }) => expect(getByRole('cell', { name: selector(customers[0]) })).toBeInTheDocument());
+  });
+
+  test('Should not render actions', () => {
+    const { getByText, getByRole, getAllByRole } = render(
+      <DataTable data={[customers[0]]} columns={columns} actions={{ name: 'action' }} />,
+    );
+    columns.forEach(({ name }) => expect(getByText(name)).toBeInTheDocument());
+    expect(getAllByRole('columnheader').length).toBe(columns.length);
+    expect(getAllByRole('cell').length).toBe(columns.length);
+  });
+
+  test('Should render edit action and register the click', () => {
+    const onEdit = jest.fn();
+    const { getByRole, getAllByRole } = render(
+      <DataTable data={[customers[0]]} columns={columns} actions={{ name: 'action', edit: (row) => onEdit(row) }} />,
+    );
+    expect(getAllByRole('columnheader').length).toBe(columns.length + 1);
+    expect(getAllByRole('cell').length).toBe(columns.length + 1);
+
+    const editButton = getByRole('button', { name: 'Edit' });
+    expect(editButton).toBeInTheDocument();
+
+    fireEvent.click(editButton);
+
+    expect(onEdit).toHaveBeenCalledTimes(1);
+    expect(onEdit).toHaveBeenCalledWith(customers[0]);
+  });
+
+  test('Should render delete action and register the click', () => {
+    const onDelete = jest.fn();
+    const { getByRole, getAllByRole } = render(
+      <DataTable
+        data={[customers[0]]}
+        columns={columns}
+        actions={{ name: 'action', delete: (row) => onDelete(row) }}
+      />,
+    );
+    expect(getByRole('columnheader', { name: 'action' })).toBeInTheDocument();
+    expect(getAllByRole('cell').length).toBe(columns.length + 1);
+
+    const editButton = getByRole('button', { name: 'Delete' });
+    expect(editButton).toBeInTheDocument();
+
+    fireEvent.click(editButton);
+
+    expect(onDelete).toHaveBeenCalledTimes(1);
+    expect(onDelete).toHaveBeenCalledWith(customers[0]);
   });
 });
 
