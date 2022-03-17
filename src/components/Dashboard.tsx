@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import WelcomeBanner from './WelcomeBanner';
 import DataTable from './DataTable';
 import Card from './Card';
-import UserForm from './UserForm';
 import { User } from 'types/user';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers, saveNewUser, saveUser, selectUsers } from './Dashboard.slice';
+
+const UserForm = React.lazy(() => import('./UserForm'));
 
 function Dashboard() {
   const dispatch = useDispatch();
@@ -108,7 +109,9 @@ function Dashboard() {
         {/* Card (Customers) */}
         {shouldDisplayUserForm && (
           <Card title={currentUser.id ? 'Edit Customer Info' : 'Create New Customer'}>
-            <UserForm userData={currentUser} onSubmit={onSubmit} onAbort={hideUserForm} />
+            <Suspense fallback={<div>Loading...</div>}>
+              <UserForm userData={currentUser} onSubmit={onSubmit} onAbort={hideUserForm} />
+            </Suspense>
           </Card>
         )}
       </div>

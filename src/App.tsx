@@ -1,12 +1,11 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import store from './App.store';
 import 'css/style.css';
 
+import store from './App.store';
 // Import pages
 import Dashboard from 'components/Dashboard';
 import Header from 'components/Header';
-
 
 function App() {
   return (
