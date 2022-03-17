@@ -67,6 +67,12 @@ export function saveUser(userData) {
     dispatch(userUpdated(userData));
   };
 }
+export function deleteUser(userData) {
+  return async function deleteUserThunk(dispatch, getState) {
+    await fetcher(`/users/${userData.id}`, { method: 'DELETE' }).catch(() => userData);
+    dispatch(userDeleted(userData.id));
+  };
+}
 
 const fetcher = (resource: string, init?: any) =>
   fetch(import.meta.env.VITE_API_BASE_URL + resource, init).then((res) => res.json());

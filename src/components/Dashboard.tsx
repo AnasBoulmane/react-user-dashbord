@@ -4,15 +4,17 @@ import DataTable from './DataTable';
 import Card from './Card';
 import { User } from 'types/user';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUsers, saveNewUser, saveUser, selectUsers } from './Dashboard.slice';
+import { deleteUser, fetchUsers, saveNewUser, saveUser, selectUsers } from './Dashboard.slice';
 
 const UserForm = React.lazy(() => import('./UserForm'));
+const Confirmation = React.lazy(() => import('./Confirmation'));
 
 function Dashboard() {
   const dispatch = useDispatch();
   const customers = useSelector(selectUsers);
   const loadingStatus = useSelector((state) => state.users.status);
   const [shouldDisplayUserForm, displayUserForm] = useState<boolean>(false);
+  const [shouldDisplayConfirmation, displayConfirmation] = useState<boolean>(false);
   const [currentUser, setUser] = useState<undefined | Record<string, never> | User>();
 
   useEffect(() => {
@@ -20,6 +22,10 @@ function Dashboard() {
   }, []);
 
   // handlers
+  const hideUserForm = () => {
+    displayUserForm(false);
+    setUser(undefined);
+  };
   const onCreate = () => {
     displayUserForm(true);
     setUser({});
@@ -28,9 +34,9 @@ function Dashboard() {
     displayUserForm(true);
     setUser(user);
   };
-  const hideUserForm = () => {
-    displayUserForm(false);
-    setUser(undefined);
+  const onDelete = (user: User) => {
+    displayConfirmation(true);
+    setUser(user);
   };
   const onSubmit = (userData) => {
     if (!userData) return;
@@ -41,6 +47,14 @@ function Dashboard() {
         : saveNewUser({ ...userData, id: customers.length + 1 }), // call POST /users
     );
     hideUserForm();
+  };
+  const onDeleteConfirm = async () => {
+    await dispatch(deleteUser(currentUser));
+    hideConfirmation();
+  };
+  const hideConfirmation = () => {
+    displayConfirmation(false);
+    setUser(undefined);
   };
 
   return (
@@ -77,7 +91,7 @@ function Dashboard() {
                 actions={{
                   name: 'Actions',
                   edit: onEdit,
-                  delete: (currentRow) => console.log(currentRow),
+                  delete: onDelete,
                 }}
                 columns={[
                   {
@@ -113,6 +127,18 @@ function Dashboard() {
               <UserForm userData={currentUser} onSubmit={onSubmit} onAbort={hideUserForm} />
             </Suspense>
           </Card>
+        )}
+
+        {shouldDisplayConfirmation && (
+          <Suspense fallback={<div>Loading...</div>}>
+            <Confirmation
+              title="Delete customer"
+              message="Are you sure you want to delete this User? All of his
+                  data will be permanently removed. This action cannot be undone."
+              onConfirm={onDeleteConfirm}
+              onAbort={hideConfirmation}
+            />
+          </Suspense>
         )}
       </div>
     </div>
